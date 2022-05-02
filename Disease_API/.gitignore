@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/DiseaseMIS.API/.vs/DiseaseMIS.API
+/DiseaseMIS.API/DiseaseMIS.API/bin
+/DiseaseMIS.API/DiseaseMIS.API/obj
+/DiseaseMIS.API/DiseaseMIS.API/Properties/PublishProfiles
+/DiseaseMIS.API/DiseaseMIS.BAL/bin
+/DiseaseMIS.API/DiseaseMIS.BAL/obj
