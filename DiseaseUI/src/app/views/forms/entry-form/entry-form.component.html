@@ -1,0 +1,199 @@
+<div class="alert alert-warning mt-4" *ngIf="content.animals.length<=0">
+  <div>
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+    <span *ngIf="content.user.userRoles.includes('Head Office')">
+      Fill up the Master Data first.
+    </span>
+    <span *ngIf="!content.user.userRoles.includes('Head Office')">
+      Contact your Administrator to fill the Master Data first.
+    </span>
+  </div>
+</div>
+
+<ng-template [ngIf]="content.animals.length>0">
+  <div class="container mt-5 grid grid-cols-2">
+    <h1 class="card-title">
+      <span class="flex-column">
+        {{content.name}} <i class="fa fa-lock text-yellow-500 fa-1x place-self-end"
+                            *ngIf="content.fileLocked"></i>
+        <br />
+        <span class="text-sm text-gray-500 text-bold-0" *ngIf="!content.user.userRoles.includes('Head Office')">
+          '<i class="text-red-500">*</i>'
+          marked fields are mandatory.
+        </span>
+        <span class="text-sm text-gray-500 text-bold-0" *ngIf="content.user.userRoles.includes('Head Office')">
+          <i class="fa fa-info text-primary"></i>
+          To view old forms, select the month and other fields below to filter out.
+        </span>
+      </span>
+    </h1>
+    <div class="flex justify-self-end">
+
+      <ng-template [ngIf]="!content.fileLocked && !content.user.userRoles.includes('Head Office')">
+        <span class="btn btn-sqaure loading" *ngIf="loading">Saving</span>
+        <button *ngIf="!loading" [ngClass]="loading?'hidden':''" id="btnPrimarySave"
+                class="btn btn-primary btnSave btn-md" (click)="save()">
+          {{saveFormTitle}}
+        </button>
+      </ng-template>
+
+      <ng-template [ngIf]="content.user.userRoles.includes('Head Office')">
+        <span class="btn btn-sqaure loading" *ngIf="loading">Saving</span>
+        <button *ngIf="content.fileLocked" [ngClass]="loading?'hidden':''"
+                class="btn btn-warning btn-md" (click)="approveEdit()">
+          Approve Edit
+        </button>
+      </ng-template>
+
+    </div>
+  </div>
+
+  <ng-template [ngIf]="!content.user.userRoles.includes('Head Office')">
+    <div class="alert alert-warning mt-4" *ngIf="content.fileLocked">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        Form read only. To edit, get the permission from 'Admin'. To view the old form, select Month below.
+      </div>
+    </div>
+  </ng-template>
+
+  <hr class="my md:min-w-full mt-4" />
+
+  <form #reportForm="ngForm">
+    <div class="relative w-full md:mb-4 mt-4 grid md:grid-cols-5 md:gap-2" *ngIf="content.forms!=undefined">
+      <div>
+        <label class="block text-gray-700 mt-4 text-sm font-semibold mb-2">
+          Month & Year<span class="text-red-500">*</span>
+        </label>
+        <input id="txtCreatedDate" type="month"
+               class="rounded-md w-full form-input focus:ring"
+               (change)="getIncidenceForm(false)"
+               placeholder="Name" name="Name" [(ngModel)]="content.forms.createdDate"
+               required minlength="1" maxlength="250" />
+      </div>
+
+      <div *ngIf="content.districts.length>0">
+        <label class="block text-gray-700 mt-4 text-sm font-semibold mb-2">
+          District<span class="text-red-500">*</span>
+        </label>
+        <select id="selDistrict" class="form-input focus:ring w-full rounded-md" [(ngModel)]="content.forms.district.id"
+                [ngModelOptions]="{standalone:true}" (change)="changeDistrict($event)">
+          <option *ngFor="let district of content.districts" [value]="district.id">
+            {{district.name}}
+          </option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-gray-700 mt-4 text-sm font-semibold mb-2">
+          Institute<span class="text-red-500">*</span>
+        </label>
+        <select id="selInstitute" class="form-input focus:ring w-full rounded-md"
+                [(ngModel)]="content.forms.institute.id"
+                [ngModelOptions]="{standalone:true}" (change)="changeInstitute($event)">
+          <option *ngFor="let institute of content.institutes" [value]="institute.id">
+            {{institute.name}}
+          </option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-gray-700 mt-4 text-sm font-semibold mb-2">
+          Incharge<span class="text-red-500">*</span>
+        </label>
+        <select id="selIncharge" class="form-input focus:ring w-full rounded-md"
+                [(ngModel)]="content.forms.incharge.id"
+                [ngModelOptions]="{standalone:true}">
+          <option *ngFor="let incharge of content.incharges" [value]="incharge.id">
+            {{incharge.name}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <p class="w-full loading" *ngIf="loading">loading form...</p>
+
+    <div class="grid mt-5 w-full mb-3" *ngIf="!loading">
+      <div class="tabs z-10 -mb-px">
+        <button class="tab tab-bordered btn-md font-semibold"
+                data-tip="Click here for Incidence cases"
+                (click)="getIncidenceForm(false); openTab = 'incidence';"
+                [ngClass]="openTab == 'incidence'? 'bg-base-200 tab-active' : ''">
+          <i *ngIf="content.forms.currentStep!=null"
+             class="fa fa-check fa-2x mr-2 text-green-500">
+          </i>  Incidence
+        </button>
+        <button #btnMortality class="tab btn-md font-semibold tab-bordered tooltip tooltip-warning"
+                data-tip="Click here for Mortality cases"
+                (click)="openTab = 'mortality'; getMortalityForm()"
+                [ngClass]="openTab === 'mortality'? 'bg-base-200 tab-active' : ''">
+          <i *ngIf="content.forms.currentStep!=null &&  content.forms.currentStep!='mortality'"
+             class="fa fa-check fa-2x mr-2 text-green-500">
+          </i>
+          Mortality
+        </button>
+        <button class="tab btn-md font-semibold tab-bordered tooltip tooltip-warning"
+                data-tip="Click here for Remarks"
+                (click)="openTab = 'remarks'"
+                [ngClass]="openTab === 'remarks'? 'bg-base-200 tab-active' : ''">
+          <i *ngIf="content.forms.currentStep!=null && content.forms.currentStep=='remarks'"
+             class="fa fa-check fa-2x mr-2 text-green-500">
+          </i> Remarks
+        </button>
+        <div class="tab tab-bordered flex-1 cursor-default"></div>
+      </div>
+      <div *ngIf="openTab == 'incidence'" class="w-full mt-5 overflow-hidden">
+        <div *ngIf="content.errors.length > 0" class="mt-5 alert shadow alert-error">
+          <div>
+            <i class="fa fa-exclamation-triangle text-yellow"></i>
+            {{content.errors[0]}}
+          </div>
+        </div>
+        <p class="font-semibold mb-3">Cases from {{content.formName != 'infectious'?'Non Infectious':'Infectious'}} Diseases for {{content.forms.createdDate | date: 'MMM yyyy'}}</p>
+        <app-disease-form [content]="content" [formType]="formType" [appDisable]="content.fileLocked"></app-disease-form>
+      </div>
+      <div *ngIf="openTab == 'mortality'" class="mt-5 w-full overflow-hidden">
+        <div *ngIf="content.errors.length > 0" class="mt-5 alert shadow alert-error">
+          <div>
+            <i class="fa fa-exclamation-triangle text-yellow"></i>
+            {{content.errors[0]}}
+          </div>
+        </div>
+        <p class="font-semibold mb-3">Mortality from {{content.formName != 'infectious'?'Non Infectious':'Infectious'}} Diseases for  {{content.forms.createdDate | date: 'MMM yyyy'}}</p>
+        <app-disease-form [content]="content" [formType]="formType" [appDisable]="content.fileLocked"></app-disease-form>
+      </div>
+
+      <div *ngIf="openTab=='remarks'" class="mt-5 w-full overflow-hidden">
+        <div *ngIf="content.errors.length > 0" class="mt-5 alert shadow alert-error">
+          <div>
+            <i class="fa fa-exclamation-triangle text-yellow"></i>
+            {{content.errors[0]}}
+          </div>
+        </div>
+        <p class="font-semibold mb-3">Add Remarks</p>
+        <textarea [appDisable]="content.fileLocked" class="form-input rounded w-full focus:ring" rows="4"
+                  [(ngModel)]="content.forms.remarks" [ngModelOptions]="{standalone:true}"></textarea>
+      </div>
+      <div *ngIf="openTab=='completed'" class="mt-5 w-full overflow-hidden">
+        <div class="alert alert-success">
+          <div>
+            <i class="fa fa-info text-blue-500 mr-2"></i> Form completed for month {{this.content.forms.createdDate | date:'MMM yyyy'}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-row justify-end">
+      <span class="btn btn-sqaure loading align-center" *ngIf="loading"> Loading</span>
+      <ng-template [ngIf]="!content.fileLocked && !content.user.userRoles.includes('Head Office')">
+        <span class="btn btn-sqaure loading" *ngIf="loading">Saving</span>
+        <button *ngIf="!loading" [ngClass]="loading?'hidden':''"
+                class="btn btnSave btn-primary btn-md" (click)="save()">
+          {{saveFormTitle}}
+        </button>
+      </ng-template>
+    </div>
+  </form>
+</ng-template>
+
+

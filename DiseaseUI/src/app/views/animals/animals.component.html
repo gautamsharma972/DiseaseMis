@@ -1,0 +1,78 @@
+<div class="flex flex-wrap">
+  <div class="container mt-5 grid grid-cols-2">
+    <h1 class="card-title">
+      <span class="flex-column">
+        Manage {{content.name}}
+        <br />
+        <span class="text-sm text-gray-500">Click '<i class="fa fa-edit"></i>' icon to edit list item.</span>
+      </span>
+    </h1>
+
+    <div class="flex justify-self-end">
+      <div class="form-control justify-self-end w-full">
+        <input type="search" placeholder="Search" [(ngModel)]="searchTerm"
+               [ngModelOptions]="{standalone:false}" class="input input-bordered">
+      </div>
+      <div class="dropdown dropdown-end ml-5 w-full">
+        <label tabindex="0" class="btn btn-primary ">
+          <i class="fa-solid fa-plus mr-2.5"></i>
+          Add new
+        </label>
+        <ul tabindex="0" class="p-2 shadow menu dropdown-content bg-base-200 border rounded-box w-52">
+          <li>
+            <label class="modal-button" for="Animals-modal"
+                   (click)="create('categories')">
+              Add new Category
+            </label>
+          </li>
+          <li>
+            <label class="modal-button" for="Animals-modal"
+                   (click)="create('animals')">
+              Add new Animal
+            </label>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!--<hr class="my md:min-w-full mt-4" />-->
+
+  <div class="grid mt-5 w-full" x-data="{ openTab: 'category' }">
+    <div class="tabs z-10 -mb-px">
+      <button class="tab tab-bordered btn-md font-semibold"
+              x-on:click="openTab = 'category'"
+              x-bind:class="openTab === 'category'? 'bg-base-200 tab-active' : ''">
+        Category
+      </button>
+      <button class="tab btn-md font-semibold tab-bordered" [ngClass]="(content.categories.length<=0)? 'tooltip tooltip-warning cursor-not-allowed':''"
+              [attr.data-tip]="content.categories.length<=0?'Categories not set, Add Categories first':'Click here to view Animals'" [disabled]="content.categories.length<=0"
+              x-on:click="openTab = 'animals'"
+              x-bind:class="openTab === 'animals'? 'bg-base-200 tab-active' : ''" (click)="getAnimals(false)">
+        Animals
+      </button>
+      <div class="tab tab-bordered flex-1 cursor-default"></div>
+    </div>
+    <div x-show="openTab == 'category'" class="overflow-x-auto w-full mt-5 border rounded-md">
+      <div *ngIf="content.errorMessage_categories != ''" class="mt-5 alert shadow alert-error">
+        <div>
+          <i class="fa fa-exclamation-triangle text-yellow"></i>
+          {{content.errorMessage_categories}}
+        </div>
+      </div>
+      <app-category-table *ngIf="content.categories.length>0" [content]="content" [searchTerm]="searchTerm"></app-category-table>
+    </div>
+    <div x-show="openTab == 'animals'" class="overflow-x-auto w-full mt-5 border rounded-md">
+      <div *ngIf="content.errorMessage_animals != ''" class="mt-5 alert shadow alert-error">
+        <div>
+          <i class="fa fa-exclamation-triangle text-yellow"></i>
+          {{content.errorMessage_animals}}
+        </div>
+      </div>
+      <app-animal-table *ngIf="content.animals.length>0" [content]="content" [searchTerm]="searchTerm"></app-animal-table>
+    </div>
+    
+  </div>
+</div>
+
+<edit-animal-view [content]="content"></edit-animal-view>

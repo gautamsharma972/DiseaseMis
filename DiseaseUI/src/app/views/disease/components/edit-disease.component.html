@@ -1,0 +1,73 @@
+<input type="checkbox" id="Diseases-modal" #DiseasesModal class="modal-toggle">
+<div class="modal" *ngIf="content">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{{content.title}}</h3>
+    <hr class="w-full mt-4"/>
+
+    <form #form="ngForm">
+      <div class="w-full mb-3 mt-4">
+
+        <label *ngFor="let dType of content.Diseases.diseaseTypes; let i = index">
+
+          <input type="radio" [(ngModel)]="content.Diseases.diseaseType.id"
+                 [ngModelOptions]="{standalone:false}" [value]="dType.id"
+                 name="diseaseType_" class="radio checked:bg-red-500">
+          <span class="label-text ml-2 mr-5 text-gray-700 font-bold">{{dType.type}}</span>
+        </label>
+
+
+        <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+          Name
+        </label>
+        <input type="text"
+               class="rounded focus:ring w-full form-control form-control-sm"
+               placeholder="Name" name="Name"
+               [(ngModel)]="content.Diseases.name"
+               required minlength="1" maxlength="250"/>
+        <div class="grid grid-cols-1">
+
+          <a class="text-blue-600 cursor-pointer mt-4 mb-2 place-self-end" (click)="addField()">
+            <i class="fa-solid fa-plus text-l text-blue-600"></i>
+            Add new Symptoms
+          </a>
+        </div>
+        <div class="container overflow-y-auto scrollbar" style="height:290px">
+          <div *ngFor="let symptom of content.Diseases.symptoms; let  i=index" class="card shadow mt-2 border">
+            <div class="card-body">
+              <a class="text-red-400 cursor-pointer place-self-end" (click)="deleteField(i)">
+                <i class="fa-solid fa-trash text-l text-red-400"></i>
+                Delete Symptom
+              </a>
+              <label class="block text-gray-700 mt-4 text-sm font-bold mb-2 w-full">
+                Symptoms
+              </label>
+              <input type="text"
+                     class="rounded focus:ring w-full form-control form-control-sm"
+                     placeholder="Symptom" name="Symptom_{{i}}"
+                     [(ngModel)]="content.Diseases.symptoms[i].name"
+                     required minlength="1" maxlength="250"/>
+              <label class="block text-gray-700 mt-4 text-sm font-bold mb-2 w-full">
+                Sub Symptom
+                <!--          <a class="text-blue-600 right-0" (click)="addField()">-->
+                <!--            <i class="fa-solid fa-plus text-l text-blue-600"></i>-->
+                <!--            Add new Symptoms-->
+                <!--          </a>-->
+              </label>
+              <input type="text"
+                     class="rounded focus:ring w-full form-control form-control-sm"
+                     placeholder="Sub Symptom" name="subSymptom"
+                     [(ngModel)]="content.Diseases.symptoms[i].subSymptoms[0].name"
+                     required minlength="1" maxlength="250"/>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-action">
+        <span class="btn btn-square loading align-center" *ngIf="isSaveLoading"> Loading</span>
+        <button type="submit" *ngIf="!isSaveLoading" class="btn btn-primary" (click)="save()">Save</button>
+        <label for="Diseases-modal" class="btn">Cancel</label>
+      </div>
+    </form>
+  </div>
+</div>

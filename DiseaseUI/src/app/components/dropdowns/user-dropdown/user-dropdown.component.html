@@ -1,0 +1,13 @@
+<div class="flex justify-end flex-1 px-2">
+  <div class="flex items-stretch">
+    <div class="dropdown dropdown-end">
+      <label tabindex="0" class="text-base cursor-pointer">
+        <i class="fa-solid fa-user mr-2">
+        </i>{{user==undefined? '': user.userName}} <b class="caret"></b>
+      </label>
+      <ul tabindex="0" class="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+         <li><a (click)="logout()"><i class="fa-solid fa-sign-out"></i> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

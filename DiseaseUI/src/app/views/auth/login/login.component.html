@@ -1,0 +1,77 @@
+<div class="container mx-auto px-4">
+  <div class="flex content-center items-center justify-center">
+    <div class="w-full lg:w-4/12">
+      <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-white border border-slate-300">
+        <div class="rounded-t mb-0 px-6 py-6">
+          <div class="text-center mb-3">
+            <h1 class="text-black font-bold text-2xl">Disease MIS</h1>
+          </div>
+          <hr class="mt-6 border-b-1 border-blueGray-300" />
+        </div>
+        <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
+          <form #form="ngForm">
+            <div class="relative w-full mb-3 pt-5">
+              <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                     htmlFor="grid-password">
+                UserName
+              </label>
+              <input type="text"
+                     class="border px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 form-control form-control-sm"
+                     placeholder="UserName" name="userName"
+                     #username="ngModel" [(ngModel)]="user.userName"
+                     required minlength="1" maxlength="250"
+                     [class.is-invalid]="username && (username.dirty || username.touched)" />
+              <div *ngIf="username.invalid && (username.dirty || username.touched)" class="invalid-feedback">
+                <div *ngIf="username.errors?.['required']" class="text-red-500">
+                  This field is required.
+                </div>
+                <div *ngIf="username.errors?.['minlength']" class="text-red-500">
+                  This field must have at least 1 character.
+                </div>
+                <div *ngIf="username.errors?.['maxlength']" class="text-red-500">
+                  This field must have at most 250 characters.
+                </div>
+
+              </div>
+            </div>
+
+            <div class="relative w-full mb-3">
+              <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                     htmlFor="grid-password">
+                Password
+              </label>
+              <div class="relative">
+                <input [type]="user.showPassword ? 'text' : 'password'"
+                       class="border px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 form-control form-control-sm"
+                       placeholder="Password"
+                       required
+                       name="password" #password="ngModel"
+                       [(ngModel)]="user.password" required minlength="8"
+                       [class.is-invalid]="password.invalid && (password.dirty || password.touched)">
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                  <i class="fa fa-eye" [ngClass]="{'fa-eye-fill': !user.showPassword, 'fa-eye-slash': user.showPassword}" (click)="user.showPassword = !user.showPassword"></i>
+                </div>
+              </div>
+              <div *ngIf="password.invalid && (password.dirty || password.touched)" class="invalid-feedback">
+                <div *ngIf="password.errors?.['required']" class="text-red-500">
+                  This field is required.
+                </div>
+                <div *ngIf="password.errors?.['minlength']" class="text-red-500">
+                  This field must have at least 8 characters.
+                </div>
+              </div>
+            </div>
+            <div class="text-center mt-6">
+              <span class="btn btn-sqaure loading align-center" *ngIf="isLoggingIn"> Signing</span>
+              <button *ngIf="!isLoggingIn" class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                      type="submit" (click)="validate(form)">
+                Sign In
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

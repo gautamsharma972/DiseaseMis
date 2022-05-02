@@ -1,0 +1,69 @@
+<input type="checkbox" id="Samples-modal" #SamplesModal class="modal-toggle">
+<div class="modal" *ngIf="content">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{{content.title}}</h3>
+    <hr class="w-full mt-4"/>
+
+    <form #form="ngForm">
+      <div class="relative w-full mb-3">
+        <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+          Name
+        </label>
+        <input type="text"
+               class="rounded focus:ring w-full form-control form-control-sm"
+               placeholder="Name" name="Name"
+               [(ngModel)]="content.Samples.name"
+               required minlength="1" maxlength="250"/>
+        <div class="grid grid-cols-1">
+          <a class="text-blue-600 cursor-pointer mt-4 mb-2 place-self-end" (click)="addField()">
+            <i class="fa-solid fa-plus text-l text-blue-600"></i>
+            Add new Test Types
+          </a>
+        </div>
+        <div *ngFor="let testType of content.Samples.testTypes; let  i=index" class="card shadow mt-2 border">
+          <div class="card-body">
+            <a class="text-red-400 cursor-pointer place-self-end" (click)="deleteField(1, i, 0)">
+              <i class="fa-solid fa-trash text-l text-red-400"></i>
+              Delete Test Type 1
+            </a>
+            <label class="block text-gray-700 mt-4 text-sm font-bold mb-2 w-full">
+              Test Type 1
+            </label>
+            <input type="text"
+                   class="rounded focus:ring w-full form-control form-control-sm"
+                   placeholder="Test Type1" name="testType_{{i}}"
+                   [(ngModel)]="content.Samples.testTypes[i].name"
+                   required minlength="1" maxlength="250"/>
+
+            <div class="grid grid-cols-1">
+              <a class="text-blue-600 cursor-pointer mt-4 mb-2 place-self-end"
+                 (click)="addSubTestType(content.Samples.testTypes[i])">
+                <i class="fa-solid fa-plus text-l text-blue-600"></i>
+                Add new Test Type 2
+              </a>
+            </div>
+            <ng-template ngFor let-subtests [ngForOf]="content.Samples.testTypes[i].subTests" let-j="index">
+              <a class="text-red-400 cursor-pointer place-self-end" (click)="deleteField(2, i, j)">
+                <i class="fa-solid fa-trash text-l text-red-400"></i>
+                Delete Test Type 2
+              </a>
+              <label class="block text-gray-700 mt-4 text-sm font-bold mb-2 w-full">
+                Test Type 2
+              </label>
+              <input type="text"
+                     class="rounded focus:ring w-full form-control form-control-sm"
+                     placeholder="Test Type 2" name="testTypes_{{i}}_subTest"
+                     [(ngModel)]="content.Samples.testTypes[i].subTests[j].name"
+                     required minlength="1" maxlength="250"/>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="modal-action">
+        <span class="btn btn-sqaure loading align-center" *ngIf="isSaveLoading"> Loading</span>
+        <button type="submit" *ngIf="!isSaveLoading" class="btn btn-primary" (click)="save()">Save</button>
+        <label for="Samples-modal" class="btn">Cancel</label>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<input type="checkbox" id="Animals-modal" #AnimalsModal class="modal-toggle">
+<div class="modal" *ngIf="content">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{{content.title}}</h3>
+    <hr class="w-full mt-4" />
+
+    <form #form="ngForm">
+      <div class="relative w-full mb-3">
+
+        <div *ngIf="content.typeOf=='animals'">
+          <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+            Category
+          </label>
+          <select *ngIf="content.categories.length!=undefined" class="rounded focus:ring w-full form-control form-control-sm"
+                  required [(ngModel)]="content.Animals.category.id" [ngModelOptions]="{standalone:true}">
+            <option value="-1" selected disabled>Select</option>
+            <option *ngFor="let option of content.categories" [value]="option.id">
+              {{option.name}}
+            </option>
+          </select>
+        </div>
+
+        <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+          Name
+        </label>
+        <input type="text"
+               class="rounded focus:ring w-full form-control form-control-sm"
+               placeholder="Name" name="Name"
+               [(ngModel)]="content.Animals.name" [ngModelOptions]="{standalone:true}"
+               required minlength="1" maxlength="250" />
+         
+      </div>
+      <div class="modal-action">
+        <span class="btn btn-square loading align-center" *ngIf="isSaveLoading"> Loading</span>
+        <button type="submit" *ngIf="!isSaveLoading" class="btn btn-primary" (click)="save()">Save</button>
+        <label for="Animals-modal" class="btn">Cancel</label>
+      </div>
+    </form>
+  </div>
+</div>

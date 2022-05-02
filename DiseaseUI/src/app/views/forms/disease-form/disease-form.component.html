@@ -1,0 +1,65 @@
+<div class="rounded-b-box rounded-tr-box scrollbar overflow-auto h-full w-full">
+  <table class="form-table table-auto w-full table table-compact border-collapse" #tableForm id="tableForm">
+    <thead>
+      <tr class="sticky z-10 top-0 border border-slate-300">
+        <th>Sl No.</th>
+        <ng-template ngFor let-header [ngForOf]="content.fixedColumnHeader" let-i="index">
+          <th>
+            {{header}}
+          </th>
+        </ng-template>
+        <ng-template ngFor let-header [ngForOf]="content.columnHeader" let-i="index">
+          <th>
+            {{header}}
+          </th>
+        </ng-template>
+      </tr>
+
+    </thead>
+    <tbody>
+      <tr *ngFor="let disease of content.diseases; let i=index" #diseaseFormTable>
+        <th class="border border-slate-300">{{i + 1}}</th>
+        <td class="border border-slate-300">{{disease.name}}</td>
+        <td class="border border-slate-300"
+            [ngClass]="disease.symptoms[0].name != null? 'gap-4 grid grid-row-'+disease.symptoms.length: ''">
+          <a *ngFor="let symptom of disease.symptoms; let s = index" class="mb-4 mt-2 py-0.5">
+            {{symptom.name}}
+          </a>
+        </td>
+        <td class="border border-slate-300" *ngIf="content.fixedColumnHeader.length == 3">
+          <div class="grid-row-{{disease.symptoms.length}}">
+            <ng-template ngFor let-symptom [ngForOf]="disease.symptoms">
+              <ng-template ngFor let-subSymptom [ngForOf]="symptom.subSymptoms">
+                <a *ngIf="subSymptom.name != null" class="my-5 py-0.5">{{subSymptom.name}}</a>
+                <a *ngIf="subSymptom.name == null" class="py-8"></a>
+              </ng-template>
+            </ng-template>
+          </div>
+        </td>
+        <td *ngFor="let animal of content.animals; let a = index" class="border border-slate-300">
+          <div class="grid grid-row-{{disease.symptoms.length}} gap-8">
+            <ng-template ngFor let-symptom [ngForOf]="disease.symptoms" let-s="index">
+              <input id="animal_{{symptom.id}}_{{animal.id}}"
+                     type="number" placeholder="Type here" min="0"
+                     (change)="calcTotal(symptom);"
+                     value="0"
+                     class="input input-bordered focus:ring input-sm w-24 max-w-xs animal_{{symptom.id}}">
+            </ng-template>
+          </div>
+        </td>
+        <td class="border border-slate-300">
+          <div class="grid grid-row-{{disease.symptoms.length}} gap-8">
+            <input *ngFor="let symptom of disease.symptoms; let s = index; let last = last"
+                   [ngInit]="calcTotal(symptom)"
+                   id="animal_{{symptom.id}}_total"
+                   type="number" disabled placeholder="Type here" min="0"
+                   [value]="symptom.total"
+                   class="input input-bordered focus:ring input-sm max-w-xs w-24 animal_{{symptom.id}}_total">
+
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

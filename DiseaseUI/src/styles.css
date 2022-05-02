@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  body::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  body::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #f7f4ed;
+  }
+
+  body::-webkit-scrollbar-thumb {
+    background: lightgray;
+    border-radius: 100vh;
+    border: 3px solid lightgray;
+  }
+
+  body::-webkit-scrollbar-thumb:hover {
+    background: lightgray;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #f7f4ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: lightgray;
+    border-radius: 100vh;
+    border: 3px solid lightgray;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: lightgray;
+  }
+}
+
+.form-table {
+    position: relative;
+    text-align: center;
+}
+.form-table :where(thead,tfoot) :where(th,td) {
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--b2, var(--b1)) / var(--tw-bg-opacity));
+    font-size: .75rem;
+    line-height: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.form-table :where(thead,tfoot) :where(th,td):first-child {
+    border-top-left-radius: .5rem;
+    border-bottom-left-radius: .5rem;
+}
+.form-table :where(thead,tfoot) :where(th,td):last-child {
+    border-top-right-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+}
+.form-table :where(tbody th,tbody td) {
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--b1) / var(--tw-bg-opacity));
+}
+.form-table {
+    display: table;
+}
+.col-header-width {
+   width: 13rem !important ;
+}
+
+.table-input {
+  width: 30px !important;
+}

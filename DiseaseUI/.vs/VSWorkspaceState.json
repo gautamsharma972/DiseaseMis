@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src\\app",
+    "\\src\\app\\components",
+    "\\src\\app\\components\\dropdowns",
+    "\\src\\app\\components\\dropdowns\\user-dropdown",
+    "\\src\\app\\views",
+    "\\src\\app\\views\\forms",
+    "\\src\\app\\views\\forms\\entry-form",
+    "\\src\\app\\views\\forms\\laboratory-form",
+    "\\src\\app\\views\\user-management"
+  ],
+  "SelectedNode": "\\src",
+  "PreviewInSolutionExplorer": false
+}

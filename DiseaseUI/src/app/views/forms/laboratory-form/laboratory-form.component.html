@@ -1,0 +1,167 @@
+<div class="rounded-b-box rounded-tr-box scrollbar overflow-auto h-full w-full">
+  <p class="w-full loading" *ngIf="loading">loading form...</p>
+  <table class="form-table table table-auto overflow overflow-auto table-compact border-collapse">
+    <thead>
+      <tr class="sticky z-10 top-0 border border-slate-300">
+        <th>Sl No.</th>
+        <ng-template ngFor let-header [ngForOf]="content.fixedColumnHeader" let-i="index">
+          <th>
+            {{header}}
+          </th>
+        </ng-template>
+        <ng-template ngFor let-header [ngForOf]="content.columnHeader" let-i="index">
+          <th class="col-header-width">
+            {{header}}
+          </th>
+        </ng-template>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th class="border border-slate-300"></th>
+        <ng-template ngFor let-header [ngForOf]="content.fixedColumnHeader" let-i="index">
+          <th class="border border-slate-300"></th>
+        </ng-template>
+        <th class="border border-slate-300 container" *ngFor="let header of content.columnHeader; let i= index">
+          <div class="flex">
+            <p class="font-semibold mr-7">Total</p>
+            <p class="font-semibold">No of +Cases</p>
+          </div>
+        </th>
+      </tr>
+      <tr *ngFor="let sample of content.samples; let i=index">
+        <th class="border border-slate-300">{{i + 1}}</th>
+        <td class="border border-slate-300">{{sample.name}}</td>
+        <td class="border border-slate-300">
+          <div *ngFor="let testType of sample.testTypes; let last=last" [ngClass]="sample.testTypes[0].name != null? 'grid grid-row-'+sample.testTypes.length: ''">
+            <a *ngIf="testType.subTests.length > 0" class="my-{{ 4 * (testType.subTests.length * 2)}}">{{testType.name}}</a>
+            <a *ngIf="testType.subTests.length == 0"
+               class="my-6">{{testType.name}}</a>
+            <hr *ngIf="!last" class="border-slate-300 w-full">
+          </div>
+        </td>
+        <td class="border border-slate-300" *ngIf="content.fixedColumnHeader.length == 3">
+          <div class="grid-row-{{sample.testTypes.length}}">
+            <ng-template ngFor let-testType1 [ngForOf]="sample.testTypes">
+              <div [ngClass]="testType1.subTests.length > 0? 'grid grid-row-'+testType1.subTests.length : ''">
+                <ng-template ngFor let-subtest [ngForOf]="testType1.subTests">
+                  <a *ngIf="subtest.name != null" class="my-5 py-0.5">{{subtest.name}}</a>
+                </ng-template>
+              </div>
+              <div [ngClass]="testType1.subTests.length == 0? 'grid grid-row-1': ''">
+                <a class="py-8"></a>
+              </div>
+            </ng-template>
+          </div>
+        </td>
+        <td *ngFor="let category of content.categories" class="border border-slate-300">
+          <ng-template ngFor let-testType [ngForOf]="sample.testTypes">
+            <ng-template [ngIf]="testType.subTests!=undefined && testType.subTests.length > 0 && testType.subTests[0].name != null">
+              <div class="grid grid-row-{{testType.subTests.length}}">
+                <ng-template ngFor let-subTest [ngForOf]="testType.subTests">
+                  <div class="grid grid-cols-2 gap-2">
+                    <input id="animal_{{subTest.id}}_{{category.id}}_total"
+                           type="number" placeholder="Type here" value="0"
+                           (change)="calcTotal(subTest);" min="0" style="min-width:30px"
+                           class="input input-bordered input-sm w-full my-4 animal_{{subTest.id}}_total">
+                    <input id="animal_{{subTest.id}}_{{category.id}}_noOfCase"
+                           type="number" placeholder="Type here" value="0"
+                           (change)="calcTotal(subTest);" min="0"
+                           class="input input-bordered input-sm w-full my-4 animal_{{subTest.id}}_noOfCases">
+                  </div>
+                </ng-template>
+              </div>
+            </ng-template>
+            <ng-template [ngIf]="testType.subTests!=null && testType.subTests.length==0">
+              <div class="grid grid-row-{{testType.subTests.length}}">
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="animal_{{testType.id}}_{{category.id}}_total"
+                         type="number" placeholder="Type here" value="0"
+                         (change)="calcTotal(testType);" min="0"
+                         class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{testType.id}}_total">
+                  <input id="animal_{{testType.id}}_{{category.id}}_noOfCase"
+                         type="number" placeholder="Type here" value="0"
+                         (change)="calcTotal(testType);" min="0"
+                         class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{testType.id}}_noOfCases">
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template [ngIf]="testType.subTests!=null && testType.subTests.length>0 && testType.subTests[0].name == null">
+              <div class="grid grid-row-{{testType.subTests.length}}">
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="animal_{{testType.id}}_{{category.id}}_total"
+                         type="number" placeholder="Type here" value="0"
+                         (change)="calcTotal(testType);"
+                         class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{testType.id}}_total">
+                  <input id="animal_{{testType.id}}_{{category.id}}_noOfCase"
+                         type="number" placeholder="Type here" value="0"
+                         (change)="calcTotal(testType);"
+                         class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{testType.id}}_noOfCases">
+                </div>
+              </div>
+            </ng-template>
+
+          </ng-template>
+
+          <ng-template [ngIf]="sample.testTypes.length==0">
+            <div class="grid grid-row-1">
+              <div class="grid grid-cols-2 gap-2">
+                <input id="animal_{{sample.id}}_{{category.id}}_total"
+                       type="number" placeholder="Type here" value="0" min="0"
+                       (change)="calcTotal(sample);" style="min-width:30px"
+                       class="input input-bordered input-sm w-full my-4 animal_{{sample.id}}_total">
+                <input id="animal_{{sample.id}}_{{category.id}}_noOfCase"
+                       type="number" placeholder="Type here" value="0"
+                       (change)="calcTotal(sample);" min="0"
+                       class="input input-bordered input-sm w-full my-4 animal_{{sample.id}}_noOfCases">
+              </div>
+            </div>
+          </ng-template>
+        </td>
+        <td class="border border-slate-300">
+          <div class="grid grid-row-{{sample.testTypes.length}}">
+            <ng-template ngFor let-testType [ngForOf]="sample.testTypes">
+              <ng-template [ngIf]="testType.subTests!=undefined && testType.subTests.length > 0 && testType.subTests[0].name != null">
+                <ng-template ngFor let-subTest [ngForOf]="testType.subTests">
+                  <div class="grid grid-cols-2 gap-2" [appDisable]="true">
+                    <input type="number" placeholder="Type here" value="0" min="0"
+                           class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{subTest.id}}_grandTotal">
+                    <input type="number" placeholder="Type here" value="0" min="0" [ngInit]="calcTotal(subTest)"
+                           class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{subTest.id}}_totalNoOfCases">
+                  </div>
+                </ng-template>
+              </ng-template>
+              <ng-template [ngIf]="testType.subTests!=null && testType.subTests.length==0">
+                <div class="grid grid-cols-2 gap-2" [appDisable]="true">
+                  <input type="number" placeholder="Type here" value="0" min="0"
+                         class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{testType.id}}_grandTotal">
+                  <input type="number" placeholder="Type here" value="0" min="0" [ngInit]="calcTotal(testType)"
+                         class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{testType.id}}_totalNoOfCases">
+                </div>
+              </ng-template>
+
+              <ng-template [ngIf]="testType.subTests!=null && testType.subTests.length>0 && testType.subTests[0].name == null">
+                <div class="grid grid-cols-2 gap-2" [appDisable]="true">
+                  <input type="number" placeholder="Type here" value="0" min="0"
+                         class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{testType.id}}_grandTotal">
+                  <input type="number" placeholder="Type here" value="0" min="0" [ngInit]="calcTotal(testType)"
+                         class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{testType.id}}_totalNoOfCases">
+                </div>
+              </ng-template>
+            </ng-template>
+
+            <ng-template [ngIf]="sample.testTypes.length==0">
+              <div class="grid grid-cols-2 gap-2" [appDisable]="true">
+                <input type="number" placeholder="Type here" value="0" min="0"
+                       class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{sample.id}}_grandTotal">
+                <input type="number" placeholder="Type here" value="0" min="0" [ngInit]="calcTotal(sample)"
+                       class="input input-bordered input-sm w-full max-w-xs w-full my-4 animal_{{sample.id}}_totalNoOfCases">
+              </div>
+            </ng-template>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

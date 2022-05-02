@@ -1,0 +1,75 @@
+<div class="flex flex-wrap">
+  <div class="container mt-5 grid grid-cols-2">
+    <h1 class="card-title">
+      <span class="flex-column">
+        Manage {{content.name}}
+        <br />
+        <span class="text-sm text-gray-500">Click '<i class="fa fa-edit"></i>' icon to edit list item.</span>
+      </span>
+    </h1>
+
+    <div class="flex justify-self-end">
+      <div class="form-control justify-self-end w-full">
+        <input type="search" placeholder="Search" [(ngModel)]="searchTerm"
+               [ngModelOptions]="{standalone:false}" class="input input-bordered">
+      </div>
+      <label class="btn btn-primary ml-5 modal-button" for="{{content.name}}-modal"
+             (click)="create()">
+        <i class="fa-solid fa-plus mr-2.5">
+        </i>
+        Add new
+      </label>
+    </div>
+  </div>
+
+  <!--<hr class="my md:min-w-full mt-4" />-->
+
+  <div *ngIf="content.errorMessage != ''" class="mt-5 alert shadow alert-error">
+    <div>
+      <i class="fa fa-exclamation-triangle text-yellow"></i>
+      {{content.errorMessage}}
+    </div>
+  </div>
+  <div class="overflow-x-auto w-full mt-5 border rounded-md" *ngIf="content.data.length>0">
+    <table class="table border w-full" *ngIf="content.data.length>0">
+      <!-- head -->
+      <thead>
+        <tr>
+          <td class="border-r">#</td>
+          <th>Name</th>
+          <th class="text-right">Options</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr class="hover" *ngFor="let item of content.data | filter: searchTerm; let i = index">
+          <td class="border-r">
+            {{i+1}}
+          </td>
+          <td>
+
+            <p>
+              {{item.name}}
+            </p>
+
+          </td>
+          <td class="text-right">
+            <label href="javascript:void(0)" (click)="edit(item)"
+                   class="mr-3 modal-button" for="Districts-modal"><i class="fa fa-pen-to-square fa-1x"></i></label>
+            <swal #deleteSwal
+                  title="Delete {{ item.name }}?"
+                  text="This cannot be undone"
+                  icon="question"
+                  [showCancelButton]="true"
+                  [focusCancel]="true"
+                  (confirm)="delete(item.id)">
+            </swal>
+            <a [swal]="deleteSwal" class="mr-3"><i class="fa fa-trash-can fa-1x text-red-500"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<edit-districts-view [content]="content"></edit-districts-view>

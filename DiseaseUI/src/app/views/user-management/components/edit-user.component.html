@@ -1,0 +1,89 @@
+<input type="checkbox" id="User-modal" #UserModal class="modal-toggle">
+<div class="modal" *ngIf="content">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{{content.title}}</h3>
+    <hr class="w-full mt-4" />
+
+    <form #form="ngForm">
+      <div class="relative w-full mb-3">
+        <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+          Username
+        </label>
+        <input type="text"
+               class="rounded form-input border w-full focus:ring form-control form-control-sm"
+               placeholder="Username" name="userName"
+               [(ngModel)]="content.User.userName"
+               required minlength="1" maxlength="250" />
+
+        <ng-template [ngIf]="content.caller=='POST'">
+          <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+            Password
+          </label>
+          <input type="password"
+                 class="rounded form-input border w-full focus:ring form-control form-control-sm"
+                 placeholder="Password" name="password"
+                 [(ngModel)]="content.User.password"
+                 required minlength="1" maxlength="250" />
+        </ng-template>
+
+        <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+          User Type
+        </label>
+
+        <label *ngFor="let dType of content.requiredMapping.mappingData; let i = index">
+          <input type="radio" [(ngModel)]="content.User.role"
+                 [ngModelOptions]="{standalone:false}" [value]="dType.name"
+                 name="role" class="radio checked:bg-red-500">
+          <span class="label-text ml-2 mr-5 text-gray-700 font-semibold">{{dType.name}}</span>
+        </label>
+
+        <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+          Location
+        </label>
+        <input type="text"
+               class="rounded form-input border w-full focus:ring form-control form-control-sm"
+               placeholder="Location" name="location"
+               [(ngModel)]="content.User.location"
+               required minlength="1" maxlength="250" />
+      </div>
+      <div class="modal-action">
+
+        <span class="btn btn-sqaure loading align-center" *ngIf="isSaveLoading"> Loading</span>
+
+        <button type="submit" *ngIf="!isSaveLoading" class="btn btn-primary" (click)="save()">Save</button>
+        <label for="User-modal" class="btn">Cancel</label>
+      </div>
+    </form>
+  </div>
+</div>
+
+<input type="checkbox" id="ChangePassword-modal" #ChangePasswordModal class="modal-toggle">
+<div class="modal" *ngIf="content">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Change Password</h3>
+    <p>Set new Password for User - {{content.User.userName}}</p>
+    <hr class="w-full mt-4" />
+
+    <form #form="ngForm">
+      <div class="relative w-full mb-3">
+      
+        <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+          New Password
+        </label>
+        <input type="password"
+               class="rounded form-input border w-full focus:ring form-control form-control-sm"
+               placeholder="Password" name="password"
+               [(ngModel)]="content.User.password"
+               required minlength="1" maxlength="250" />
+         
+      </div>
+      <div class="modal-action"> 
+        <span class="btn btn-sqaure loading align-center" *ngIf="isSaveLoading"> Loading</span>
+
+        <button type="submit" *ngIf="!isSaveLoading" class="btn btn-primary" (click)="savePassword()">Save</button>
+        <label for="ChangePassword-modal" class="btn">Cancel</label>
+      </div>
+    </form>
+  </div>
+</div>
+

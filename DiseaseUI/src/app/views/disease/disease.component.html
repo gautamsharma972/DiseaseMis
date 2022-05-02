@@ -1,0 +1,93 @@
+<div class="flex flex-wrap">
+  <div class="container mt-5 grid grid-cols-2">
+    <h1 class="card-title">
+      <span class="flex-column">
+        Manage {{content.name}}
+        <br />
+        <span class="text-sm text-gray-500">Click '<i class="fa fa-edit"></i>' icon to edit list item.</span>
+      </span>
+    </h1>
+
+    <div class="flex justify-self-end">
+      <div class="form-control justify-self-end w-full">
+        <input type="search" placeholder="Search" [(ngModel)]="searchTerm"
+               [ngModelOptions]="{standalone:false}" class="input input-bordered">
+      </div>
+      <label class="btn btn-primary ml-5 modal-button" for="{{content.name}}-modal"
+             (click)="create()">
+        <i class="fa-solid fa-plus mr-2.5">
+        </i>
+        Add new
+      </label>
+    </div>
+  </div>
+
+  <!--<hr class="my md:min-w-full mt-4" />-->
+
+  <div *ngIf="content.errorMessage != ''" class="mt-5 alert shadow alert-error">
+    <div>
+      <i class="fa fa-exclamation-triangle text-yellow"></i>
+      {{content.errorMessage}}
+    </div>
+  </div>
+  <div class="overflow-x-auto w-full mt-5" cdkDropList (cdkDropListDropped)="drop($event, content.data)" *ngIf="content.data.length>0">
+   <div *ngFor="let item of content.data | filter: searchTerm; let i = index" cdkDrag style="cursor:move"
+         tabindex="0" class="collapse border border-base-300 mb-3 bg-base-100 rounded-box collapse-plus">
+      <div class="collapse-title font-medium">
+        <div class="grid-cols-2 grid">
+          <div>
+            <span class="text-gray-500">{{i+1}}. </span> {{item.name}}
+            <span class="text-gray-500">&nbsp; | &nbsp;</span>
+            <a class="text-primary">Symptoms ({{item.symptoms.length}})</a>
+          </div>
+          <div class="place-self-end"> 
+            <label *ngIf="item.diseaseType !=null" class="mr-4" [ngClass]="(item.diseaseType.id == 2)? 'text-red-500':'text-gray-500'">
+              <i class="fa" [ngClass]="(item.diseaseType.id == 2)?'fa-circle text-red-500':'fa-circle text-gray-500'"></i>
+              {{item.diseaseType.type}}
+            </label>
+
+            <label href="javascript:void(0)" (click)="edit(item)"
+                   class="mr-3 modal-button" for="Diseases-modal"><i class="fa fa-pen-to-square fa-1x"></i></label>
+            <swal #deleteSwal
+                  title="Delete {{ item.name }}?"
+                  text="This will delete all its symptoms and their related sub-symptoms."
+                  icon="question"
+                  [showCancelButton]="true"
+                  [focusCancel]="true"
+                  (confirm)="delete(item.id)">
+            </swal>
+            <a [swal]="deleteSwal" class="mr-3"><i class="fa fa-trash-can fa-1x text-red-500"></i></a>
+          </div>
+
+        </div>
+      </div>
+      <div class="collapse-content" *ngIf="item.symptoms.length>0">
+        <table class="table w-full border">
+          <thead class="">
+            <tr>
+              <th>Symptoms</th>
+              <th>Sub Symptoms</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let symptoms of item.symptoms; let sI= index;">
+              <td>
+                {{symptoms.name}}
+              </td>
+              <td>
+                <span *ngFor="let subSyp of symptoms.subSymptoms; let last = last">
+                  {{subSyp.name}}
+                  <span *ngIf="!last && symptoms.subSystoms.length>1">,</span>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<edit-disease-view [content]="content"></edit-disease-view>

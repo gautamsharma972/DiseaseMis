@@ -1,0 +1,54 @@
+<input type="checkbox" id="Incharge-modal" #InchargesModal class="modal-toggle">
+<div class="modal" *ngIf="content">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{{content.title}}</h3>
+    <hr class="w-full mt-4" />
+
+    <form #form="ngForm">
+      <div class="relative w-full mb-3 relative w-full mb-3">
+        <label class="block mt-4 text-gray-700 text-sm font-bold mb-2" for="content.Incharge.name">
+          Name
+        </label>
+        <input type="text"
+               class="rounded focus:ring w-full form-control form-control-sm"
+               placeholder="Name" name="content.Incharge.name"
+               [(ngModel)]="content.Incharge.name"
+               [ngModelOptions]="{standalone:true}"
+               required minlength="1" maxlength="250" />
+        <label class="block text-gray-700 mt-4 text-sm font-bold mb-2">
+          Select Institute
+        </label>
+        <select *ngIf="content.Incharge.institute!=undefined" class="rounded focus:ring w-full form-control form-control-sm"
+                required [(ngModel)]="content.Incharge.institute.id" [ngModelOptions]="{standalone:true}">
+          <option value="-1" selected disabled>Select</option>
+          <option *ngFor="let option of content.mappingData" [value]="option.id">
+            {{option.name}}
+          </option>
+        </select>
+        <label class="block mt-4 text-gray-700 text-sm font-bold mb-2" for="content.Incharge.mobile">
+          Mobile No
+        </label>
+        <input type="text"
+               class="rounded focus:ring w-full form-control form-control-sm"
+               placeholder="Mobile" name="content.Incharge.phone"
+               [(ngModel)]="content.Incharge.phone"
+               [ngModelOptions]="{standalone:true}"
+               required minlength="1" maxlength="250" />
+        <label class="block mt-4 text-gray-700 text-sm font-bold mb-2" for="content.Incharge.designation">
+          Designation
+        </label>
+        <input type="text"
+               class="rounded focus:ring w-full form-control form-control-sm"
+               placeholder="Designation" name="content.Incharge.designation"
+               [(ngModel)]="content.Incharge.designation"
+               [ngModelOptions]="{standalone:true}"
+               required minlength="1" maxlength="250" />
+      </div>
+      <div class="modal-action">
+        <span class="btn btn-sqaure loading align-center" *ngIf="isSaveLoading"> Loading</span>
+        <button type="submit" *ngIf="!isSaveLoading" class="btn btn-primary" (click)="saveIncharge()">Save</button>
+        <label for="Incharge-modal" class="btn">Cancel</label>
+      </div>
+    </form>
+  </div>
+</div>

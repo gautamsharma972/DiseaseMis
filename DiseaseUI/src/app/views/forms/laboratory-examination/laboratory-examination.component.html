@@ -1,0 +1,117 @@
+<div class="alert alert-warning mt-4" *ngIf="content.categories.length<=0">
+  <div>
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+    <span *ngIf="content.user.userRoles.includes('Head Office')">
+      Fill up the Master Data first.
+    </span>
+    <span *ngIf="!content.user.userRoles.includes('Head Office')">
+      Contact your Administrator to fill the Master Data first.
+    </span>
+  </div>
+</div>
+
+<ng-template [ngIf]="content.categories.length>0">
+
+  <div class="container mt-5 grid grid-cols-2">
+    <h1 class="card-title">
+      <span class="flex-column">
+        {{content.name}} <i class="fa fa-lock text-yellow-500 fa-1x place-self-end" *ngIf="content.fileLocked"></i>
+        <br />
+        <span class="text-sm text-gray-500 text-bold-0" *ngIf="!content.user.userRoles.includes('Head Office')">
+          '<i class="text-red-500">*</i>'
+          marked fields are mandatory.
+        </span>
+        <span class="text-sm text-gray-500 text-bold-0" *ngIf="content.user.userRoles.includes('Head Office')">
+          <i class="fa fa-info text-primary"></i>
+          To view old forms, select the month and other fields below to filter out.
+        </span>
+      </span>
+    </h1>
+    <div class="flex justify-self-end">
+      <ng-template [ngIf]="!content.fileLocked && !content.user.userRoles.includes('Head Office')">
+        <span class="btn btn-sqaure loading" *ngIf="loading">loading</span>
+        <button *ngIf="!loading" [ngClass]="loading?'hidden':''" id="btnPrimarySave"
+                class="btn btn-primary btnSave btn-md" (click)="save()">
+          Save
+        </button>
+      </ng-template>
+
+      <ng-template [ngIf]="content.user.userRoles.includes('Head Office')">
+        <span class="btn btn-sqaure loading" *ngIf="loading">Saving</span>
+        <button *ngIf="content.fileLocked"
+                class="btn btn-warning btn-md" (click)="approveEdit()">
+          Approve Edit
+        </button>
+      </ng-template>
+
+    </div>
+  </div>
+
+  <ng-template [ngIf]="!content.user.userRoles.includes('Head Office')">
+    <div class="alert alert-warning mt-4" *ngIf="content.fileLocked">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        Form read only. To edit, get the permission from 'Admin'. To view the old form, select Month below.
+      </div>
+    </div>
+  </ng-template>
+
+  <hr class="my md:min-w-full mt-4" />
+  <div class="relative w-full md:mb-4 mt-4 grid md:grid-cols-5 md:gap-2" *ngIf="!loading">
+    <div>
+      <label class="block text-gray-700 mt-4 text-sm font-semibold mb-2">
+        Month & Year<span class="text-red-500">*</span>
+      </label>
+      <input id="txtCreatedDate" type="month"
+             class="rounded-md w-full form-input focus:ring"
+             placeholder="Name" name="Name"
+             (change)="getForm()" [(ngModel)]="content.forms.createdDate"
+             required minlength="1" maxlength="250" />
+    </div>
+
+    <div *ngIf="content.districts.length>0">
+      <label class="block text-gray-700 mt-4 text-sm font-semibold mb-2">
+        District<span class="text-red-500">*</span>
+      </label>
+      <select id="selDistrict" class="form-input focus:ring w-full rounded-md"
+              [(ngModel)]="content.forms.district.id">
+        <option *ngFor="let district of content.districts" [value]="district.id">
+          {{district.name}}
+        </option>
+      </select>
+    </div>
+
+  </div>
+  <div class="grid mt-5 w-full" *ngIf="!loading">
+
+    <div class="w-full mt-5 overflow-hidden">
+      <div *ngIf="content.errors.length > 0" class="mt-5 alert shadow alert-error">
+        <div>
+          <i class="fa fa-exclamation-triangle text-yellow"></i>
+          {{content.errors[0]}}
+        </div>
+      </div>
+      <app-laboratory-form [content]="content" [appDisable]="content.fileLocked"></app-laboratory-form>
+
+    </div>
+    <div class="mt-4">
+      <p class="font-semibold mb-3">Add Remarks</p>
+      <textarea [appDisable]="content.fileLocked" class="form-input rounded w-full focus:ring" rows="4"
+                [(ngModel)]="content.forms.remarks" [ngModelOptions]="{standalone:true}"></textarea>
+    </div>
+  </div>
+  <div class="flex flex-row justify-end mt-4">
+    <ng-template [ngIf]="!content.fileLocked && !content.user.userRoles.includes('Head Office')">
+      <span class="btn btn-sqaure loading" *ngIf="loading">loading</span>
+      <button *ngIf="!loading" [ngClass]="loading?'hidden':''" id="btnPrimarySave"
+              class="btn btn-primary btnSave btn-md mt-5" (click)="save()">
+        Save
+      </button>
+    </ng-template>
+  </div>
+
+</ng-template>
